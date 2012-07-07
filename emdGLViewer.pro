@@ -24,7 +24,8 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     glwidget.h \
-    gl-matrix.h
+    gl-matrix.h \
+    gpubuffer.h
 
 FORMS    += mainwindow.ui
 

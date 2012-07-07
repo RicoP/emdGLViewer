@@ -1,16 +1,37 @@
 #include "glwidget.h"
 #include "gl-matrix.h"
+#include "gpubuffer.h"
 #include <QMessageBox>
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
     program(0),
-    frame(0)
+    frame(0),
+    m_angleX(0.0f),
+    m_angleY(0.0f)
 {
     timer = new QTimer(this);
     timer->start(1000 / 30);
     connect(timer,SIGNAL(timeout()),this,SLOT(repaint()));
 }
+
+float& GLWidget::angleX() {
+    return this->m_angleX;
+}
+
+float GLWidget::angleX() const {
+    return this->m_angleX;
+}
+
+float& GLWidget::angleY() {
+    return this->m_angleY;
+}
+
+float GLWidget::angleY() const {
+    return this->m_angleY;
+}
+
+
 
 void GLWidget::initializeGL()
 {    
@@ -33,8 +54,8 @@ void GLWidget::initializeGL()
 
     glClearColor(r / 256.0f, g / 256.0f, b / 256.0f, 1.0);
 
-    //glEnable(GL_CULL_FACE);
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 
     GLuint shaderIds[2] = { 0, 0 };
     int flags[2] = { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER };
@@ -118,7 +139,31 @@ void GLWidget::paintGL()
         +0.5f, -0.5f, +0.0f
     };
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    trianglevt trivt = {
+        //P1
+        {
+            //Vertex1
+            { +0.0f, +0.5f, +0.0f, 1.0f },
+            //Texture1
+            { +0.0f, +1.0f }
+        },
+        //P2
+        {
+            //Vertex2
+            { -0.5f, -0.5f, +0.0f, 1.0f },
+            //Texture2
+            { +1.0f, +1.0f }
+        },
+        //P3
+        {
+            //Vertex3
+            { +0.5f, -0.5f, +0.0f, 1.0f },
+            //Texture3
+            { +0.5f, +0.0f }
+        }
+    };
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
 
@@ -149,10 +194,9 @@ void GLWidget::paintGL()
     GLint uProjection = glGetUniformLocation(program, "uProjection");
     //GLint uTexture = glGetUniformLocation(program, "uTexture");
 
-    mat4_multiply(modelview, camera, modelview);
-    float translate[3] = {0.0f, 0.0f, (float)sin(0.1f * frame)};
-    mat4_translate(modelview, translate, modelview);
-    mat4_rotateY(modelview, frame / 20.0f, modelview);
+    mat4_multiply(modelview, camera, modelview);    
+    mat4_rotateY(modelview, angleY(), modelview);
+    mat4_rotateX(modelview, angleX(), modelview);
 
     //mat4_identity(modelview);
     //mat4_identity(projection);
