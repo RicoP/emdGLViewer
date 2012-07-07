@@ -16,8 +16,10 @@ void GLWidget::initializeGL()
 {    
     static const GLbyte vertexShaderSrc[] =
         "attribute vec4 aVertex;   "
+        "uniform mat4 uModelview;  "
+        "uniform mat4 uProjection; "
         "void main(void) {         "
-        "	gl_Position = aVertex; "
+        "	gl_Position = uProjection * uModelview * aVertex; "
         "}                         ";
 
     static const GLbyte fragmentShaderSrc[] =
@@ -63,8 +65,6 @@ void GLWidget::initializeGL()
 
     GLuint vertexShader = shaderIds[0];
     GLuint fragmentShader = shaderIds[1];
-
-    qDebug() << vertexShader << " " << fragmentShader << " " << program;
 
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
@@ -112,7 +112,6 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::paintGL()
 {
-
     GLfloat tri[] = {
         +0.0f, +0.5f, +0.0f,
         -0.5f, -0.5f, +0.0f,
@@ -123,19 +122,18 @@ void GLWidget::paintGL()
 
     glUseProgram(program);
 
-    //GLint aVertex = glGetAttribLocation(program, "aVertex");
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, tri);
-    glEnableVertexAttribArray(0);
+    GLint aVertex = glGetAttribLocation(program, "aVertex");
+    glVertexAttribPointer(aVertex, 3, GL_FLOAT, GL_FALSE, 0, tri);
+    glEnableVertexAttribArray(aVertex);
 
     //qDebug() << "aVertex : " << aVertex;
 
-    /*
     float modelview[16];
     float projection[16];
 
     mat4_identity(modelview);
 
-    float cameraPos[3] = {0.0f, 0.0f, 0.0f};
+    float cameraPos[3] = {0.0f, 0.0f, 2.0f};
     float cameraNormal[3] = {0.0f, 0.0f, -1.0f};
     float cameraUp[3] = {0.0f, 1.0f, 0.0f};
     float cameraCenter[3];
@@ -145,25 +143,22 @@ void GLWidget::paintGL()
 
     mat4_lookAt(cameraPos, cameraCenter, cameraUp, camera);
 
-    mat4_perspective(75.0f, 4.0f / 3.0f, 0.1f, 1000.0f, projection);
-    */
+    mat4_perspective(75.0f, 4.0f / 3.0f, 0.1f, 1000.0f, projection);    
 
-    //GLint uModelview = glGetUniformLocation(program, "uModelview");
-    //GLint uProjection = glGetUniformLocation(program, "uProjection");
+    GLint uModelview = glGetUniformLocation(program, "uModelview");
+    GLint uProjection = glGetUniformLocation(program, "uProjection");
     //GLint uTexture = glGetUniformLocation(program, "uTexture");
 
-    //qDebug() << uModelview << " " << uProjection;
-    //char s[1024];
-    //mat4_str(projection, s);
-    //qDebug() << s;
+    mat4_multiply(modelview, camera, modelview);
+    float translate[3] = {0.0f, 0.0f, (float)sin(0.1f * frame)};
+    mat4_translate(modelview, translate, modelview);
+    mat4_rotateY(modelview, frame / 20.0f, modelview);
 
-//    mat4_multiply(modelview, camera, modelview);
-//    float translate[3] = {0.0f, 0.0f, 0.1f * frame};
-//    mat4_translate(modelview, translate, modelview);
+    //mat4_identity(modelview);
+    //mat4_identity(projection);
 
-    //glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
-    //glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
-
+    glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
+    glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
 

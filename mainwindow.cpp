@@ -24,5 +24,6 @@ MainWindow::~MainWindow()
 void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
-    gl->setFixedSize(ui->center->size().width(), ui->center->size().height());
+    QSize size = ui->center->size();
+    gl->setFixedSize(size.width(), size.height());
 }
