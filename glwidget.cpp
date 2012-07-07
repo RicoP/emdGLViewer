@@ -68,20 +68,26 @@ void GLWidget::initializeGL()
 
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
+
+    glBindAttribLocation(program, 0, "aVertex");
+
     glLinkProgram(program);
 
     int linkStatus;
     glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
 
     if(!linkStatus) {
+        qDebug() << "!linkStatus " << linkStatus;
         GLint infoLen = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
-        if(infoLen > 1)
-        {
+        if(infoLen > 1) {
             char* infoLog = (char*)malloc(sizeof(char) * infoLen);
             glGetProgramInfoLog(program, infoLen, NULL, infoLog);
             QMessageBox::warning(this, "[ERROR]", infoLog);
             free(infoLog);
+        }
+        else {
+            QMessageBox::warning(this, "[ERROR]", "Unknown Error");
         }
         glDeleteProgram(program);
         return;
@@ -92,15 +98,16 @@ void GLWidget::initializeGL()
     glBindBuffer(GL_ARRAY_BUFFER, vtBuffer);
     glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), tri, GL_STATIC_DRAW);*/
 
-    //glBindAttribLocation(program, 0, "aVertex");       
 
-    this->resizeGL(this->parentWidget()->size().width(), this->parentWidget()->size().height());
+
+    //this->resizeGL(this->parentWidget()->size().width(), this->parentWidget()->size().height());
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
     qDebug() << "SIZE: " << width << " " << height;
     glViewport(0, 0, (GLint)width, (GLint)height);
+    paintGL();
 }
 
 void GLWidget::paintGL()
@@ -113,6 +120,8 @@ void GLWidget::paintGL()
     };
 
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(program);
 
     //GLint aVertex = glGetAttribLocation(program, "aVertex");
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, tri);

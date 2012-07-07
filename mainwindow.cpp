@@ -11,23 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);        
 
-    //QPushButton* btn = new QPushButton(ui->centralWidget);
-    //btn->show();
-
     gl = new GLWidget(ui->center);
-    gl->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    //gl->setFixedSize(640, 480);
-    gl->show();
-
-    QObject::connect(ui->actionOpen, SIGNAL(triggered()),
-                     this, SLOT(onResize()));        
-
-//    QPushButton* btn = new QPushButton(ui->center);
-//    btn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-//    btn->setFixedWidth(640);
-//    btn->setFixedHeight(480);
-//    btn->show();
-
+    gl->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);  
+    gl->show();  
 }
 
 MainWindow::~MainWindow()
@@ -38,7 +24,5 @@ MainWindow::~MainWindow()
 void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
-    qDebug() << "resizeEvent";
-    //gl->resizeGL(ui->center->size().width(), ui->center->size().height());
     gl->setFixedSize(ui->center->size().width(), ui->center->size().height());
 }
