@@ -2,9 +2,11 @@
 #include "ui_mainwindow.h"
 #include "glwidget.h"
 #include "emdhelper.h"
+#include "about.h"
 
 #include <QGLWidget>
 #include <QPushButton>
+
 
 #define PI 3.14159265f
 
@@ -37,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->actionNextPart, SIGNAL(triggered()),
                      this, SLOT(setNext()));
+
+    QObject::connect(ui->actionAbout, SIGNAL(triggered()),
+                     this, SLOT(showAbout()));
 
     gl = new GLWidget(ui->center);
     gl->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);  
@@ -117,6 +122,11 @@ void MainWindow::sliderHorizontalChanged(int degree) {
 
 void MainWindow::sliderVerticalChanged(int degree) {
     gl->angleX() = -2.0f * PI * degree / 360.0f;
+}
+
+void MainWindow::showAbout() {
+    About about(this);
+    about.exec();
 }
 
 #undef PI

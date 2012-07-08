@@ -27,6 +27,8 @@ public Q_SLOTS:
     void setLast();
     void setPrevious();
     void setNext();
+
+    void showAbout();
     
 private:
     Ui::MainWindow *ui;

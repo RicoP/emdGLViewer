@@ -11,8 +11,6 @@ EmdObjectSet::EmdObjectSet()
 }
 
 EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
-
-
     int blob = (int)(buffer.data());
     tmd_header_t* header = (tmd_header_t*) blob;
     blob += sizeof(tmd_header_t);
@@ -63,9 +61,9 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
             for(int i = 0; i != 3; i++) {
                 tmd_vertex_t v = vertice[ vertexindice[i] ];
                 assert(v.zero == 0);
-                vectors[i].position.x = snormalize( v.x );
-                vectors[i].position.y = snormalize( v.y );
-                vectors[i].position.z = snormalize( v.z );
+                vectors[i].position.x = -snormalize( v.x );
+                vectors[i].position.y = -snormalize( v.y );
+                vectors[i].position.z = -snormalize( v.z );
                 vectors[i].position.w = 1.0f;
             }
 
@@ -74,9 +72,9 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
                 tmd_vertex_t n = normals[ normalindice[i] ];
                 assert(n.zero == 0);
                 //fprintf(file, FVN, snormalize(n.x), snormalize(n.y), snormalize(n.z));
-                vectors[i].normal.x = snormalize( n.x );
-                vectors[i].normal.y = snormalize( n.y );
-                vectors[i].normal.z = snormalize( n.z );
+                vectors[i].normal.x = -snormalize( n.x );
+                vectors[i].normal.y = -snormalize( n.y );
+                vectors[i].normal.z = -snormalize( n.z );
                 vectors[i].normal.w = 0.0f;
             }
 

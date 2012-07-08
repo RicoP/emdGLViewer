@@ -6,5 +6,6 @@
         <file>resultset_last.png</file>
         <file>resultset_next.png</file>
         <file>resultset_previous.png</file>
+        <file>star.png</file>
     </qresource>
 </RCC>

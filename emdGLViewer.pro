@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     exporttimtobmp.cpp \
     exportmeshtoobj.cpp \
     emdhelper.cpp \
-    emdobjectset.cpp
+    emdobjectset.cpp \
+    emdtimbitmap.cpp \
+    about.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -34,9 +36,12 @@ HEADERS  += mainwindow.h \
     exportmeshtoobj.h \
     emdtypes.h \
     emdhelper.h \
-    emdobjectset.h
+    emdobjectset.h \
+    emdtimbitmap.h \
+    about.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    about.ui
 
 RESOURCES += \
     icons.qrc \

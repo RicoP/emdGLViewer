@@ -37,4 +37,18 @@ struct objectset {
     int numParts;
 };
 
+struct pixelRGBA {
+    char r;
+    char g;
+    char b;
+    char a;
+};
+
+struct bitmapRaw {
+    int width;
+    int height;
+
+    pixelRGBA* raw;
+};
+
 #endif // GPUBUFFER_H
