@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "glwidget.h"
+#include "gpubuffer.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,10 +21,16 @@ public:
 public Q_SLOTS:
     void sliderHorizontalChanged(int);
     void sliderVerticalChanged(int);
+    void openEmdFile();
     
 private:
     Ui::MainWindow *ui;
     GLWidget* gl;
+
+    void* emdblob;
+    int filelength;
+
+    objectset objects;
 };
 
 #endif // MAINWINDOW_H

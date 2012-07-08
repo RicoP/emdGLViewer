@@ -20,12 +20,21 @@ SOURCES += main.cpp\
     str.c \
     quat.c \
     mat4.c \
-    mat3.c
+    mat3.c \
+    exporttimtobmp.cpp \
+    exportmeshtoobj.cpp \
+    emdhelper.cpp \
+    emdobjectset.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
     gl-matrix.h \
-    gpubuffer.h
+    gpubuffer.h \
+    exporttimtobmp.h \
+    exportmeshtoobj.h \
+    emdtypes.h \
+    emdhelper.h \
+    emdobjectset.h
 
 FORMS    += mainwindow.ui
 

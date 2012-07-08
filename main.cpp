@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    //Check the alligned of out structs because this is extremely important for our GPU.
+    //Check the alligned of our structs
     assert(sizeof(GLfloat) == 4);
 
     assert(offsetof(vector4, x) == 0);
@@ -25,21 +25,6 @@ int main(int argc, char *argv[])
     assert(sizeof(textureuv)   == sizeof(GLfloat) * 2);
     assert(sizeof(vertexvtn)   == sizeof(vector4) + sizeof(textureuv) + sizeof(vector4));
     assert(sizeof(trianglevtn) == sizeof(vertexvtn) * 3);
-
-
-//    QFile file(":/shader/shader.vert");
-//    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-//        return 0;
-
-//    QTextStream in(&file);
-
-//    while (!in.atEnd()) {
-//        QString line = in.readLine();
-//        DataPtr p = line.data_ptr();
-
-//        qDebug() << "Hello" << line << "world";
-//    }
-
 
     QApplication a(argc, argv);
     MainWindow w;

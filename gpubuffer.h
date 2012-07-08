@@ -28,8 +28,18 @@ struct trianglevtn {
 };
 
 struct objectvtn {
-    trianglevtn* blob;
+    trianglevtn* triangles;
     int numTriangles;
+};
+
+struct objectset {
+    objectvtn* parts;
+    int numParts;
+
+    objectset() {
+        parts = 0;
+        numParts = 0;
+    }
 };
 
 #endif // GPUBUFFER_H
