@@ -37,7 +37,7 @@ void exportTimToBmp(void* buffer, char* output) {
 	}
 
 	int colorOffset = offset; 
-	high_color_t* colors = (high_color_t*) ((int)buffer + offset); 
+    //high_color_t* colors = (high_color_t*) ((int)buffer + offset);
 	offset += header.palette_colors * header.nb_palettes * sizeof(high_color_t); 
 
 	fprintf(stderr, "size color %i\n", sizeof(high_color_t)); 
@@ -62,7 +62,7 @@ void exportTimToBmp(void* buffer, char* output) {
 	char* rgb = (char*) malloc(image_info.size * 3);
 	int rgbIndex = 0; 
 	int x = 0; 
-	for(int i = 0; i != image_info.size; i++) { 
+    for(unsigned int i = 0; i != image_info.size; i++) {
 		high_color_t color; 
 
 		x = (i % (image_info.width * 2)); 
@@ -122,7 +122,9 @@ static int write_bmp(const char *filename, int width, int height, char *rgb)
 
     bytesPerLine = (3 * (width + 1) / 4) * 4;
 
-    strcpy(bmph.bfType, "BM");
+    //strcpy(bmph.bfType, "BM");
+    bmph.bfType[0] = 'B';
+    bmph.bfType[1] = 'M';
     bmph.bfOffBits = 54;
     bmph.bfSize = bmph.bfOffBits + bytesPerLine * height;
     bmph.bfReserved = 0;

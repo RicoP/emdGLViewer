@@ -6,6 +6,7 @@
 #include <QtGui>
 
 #include "gpubuffer.h"
+#include "emdobjectset.h"
 
 class GLWidget : public QGLWidget
 {
@@ -25,13 +26,13 @@ public:
     float angleY() const;
     
 private:
-     QTimer* timer;
-     GLuint program;
-     int frame;
-     float m_angleX;
-     float m_angleY;
+    QTimer* timer;
+    GLuint program;
+    int frame;
+    float m_angleX;
+    float m_angleY;
 
-    trianglevtn* triangles;
+    EmdObjectSet* objects;
 };
 
 #endif // GLWIDGET_H

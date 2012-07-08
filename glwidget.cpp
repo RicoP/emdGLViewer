@@ -10,6 +10,43 @@ GLWidget::GLWidget(QWidget *parent) :
     m_angleX(0.0f),
     m_angleY(0.0f)
 {
+    static trianglevtn trivt = {
+        //P1
+        {
+            //Vertex1
+            { +0.0f, +0.5f, +0.0f, 1.0f },
+            //Texture1
+            { +0.0f, +1.0f },
+            //Normal1
+            { +0.0f, +0.0f, +1.0f, +0.0f }
+
+        },
+        //P2
+        {
+            //Vertex2
+            { -0.5f, -0.5f, +0.0f, 1.0f },
+            //Texture2
+            { +1.0f, +1.0f },
+            //Normal2
+            { +0.0f, +0.0f, +1.0f, +0.0f }
+        },
+        //P3
+        {
+            //Vertex3
+            { +0.5f, -0.5f, +0.0f, 1.0f },
+            //Texture3
+            { +0.5f, +0.0f },
+            //Normal3
+            { +0.0f, +0.0f, +1.0f, +0.0f }
+        }
+    };
+
+    objectvtn* object = new objectvtn();
+    object->numTriangles = 1;
+    object->triangles = &trivt;
+
+    this->objects = new EmdObjectSet(object, 1);
+
     timer = new QTimer(this);
     timer->start(1000 / 30);
     connect(timer,SIGNAL(timeout()),this,SLOT(repaint()));
@@ -118,12 +155,6 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::paintGL()
 {
-    GLfloat tri[] = {
-        +0.0f, +0.5f, +0.0f,
-        -0.5f, -0.5f, +0.0f,
-        +0.5f, -0.5f, +0.0f
-    };
-
     trianglevtn trivt = {
         //P1
         {
