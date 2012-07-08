@@ -22,6 +22,11 @@ public Q_SLOTS:
     void sliderHorizontalChanged(int);
     void sliderVerticalChanged(int);
     void openEmdFile();
+
+    void setFirst();
+    void setLast();
+    void setPrevious();
+    void setNext();
     
 private:
     Ui::MainWindow *ui;

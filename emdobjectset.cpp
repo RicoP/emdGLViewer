@@ -7,7 +7,7 @@
 #define cnormalize(x) ((x)/((float)0xFF))
 
 EmdObjectSet::EmdObjectSet()
-    : parts(), numParts(0) {
+    : m_parts(), m_numParts(0) {
 }
 
 EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
@@ -27,8 +27,8 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
         return;
     }
 
-    this->numParts = header->num_objects;
-    this->parts    = (objectvtn*) malloc(sizeof(objectvtn) * header->num_objects);
+    this->m_numParts = header->num_objects;
+    this->m_parts    = (objectvtn*) malloc(sizeof(objectvtn) * header->num_objects);
 
     tmd_object_t* objects = (tmd_object_t*) blob;
     int firstObject = blob;
@@ -99,7 +99,7 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
             list.push_back(triangle);
         }
 
-        objectvtn* object = this->parts + iobject;
+        objectvtn* object = this->m_parts + iobject;
         object->numTriangles = list.size();
         object->triangles = (trianglevtn*) malloc(list.size() * sizeof(trianglevtn));
 
@@ -115,17 +115,17 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
 }
 
 EmdObjectSet::EmdObjectSet(objectvtn *parts, int numParts) {
-    this->parts = parts;
-    this->numParts = numParts;
+    this->m_parts = parts;
+    this->m_numParts = numParts;
 }
 
 EmdObjectSet::~EmdObjectSet() {
-    if(parts) {
-        if(parts->triangles) {
-            free(parts->triangles);
+    if(m_parts) {
+        if(m_parts->triangles) {
+            free(m_parts->triangles);
         }
 
-        free(parts);
+        free(m_parts);
     }
 }
 

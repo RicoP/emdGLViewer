@@ -24,6 +24,12 @@ public:
 
     float& angleY();
     float angleY() const;
+
+    EmdObjectSet*& objects();
+    EmdObjectSet* objects() const;
+
+    int& part();
+    int part() const;
     
 private:
     QTimer* timer;
@@ -31,8 +37,8 @@ private:
     int frame;
     float m_angleX;
     float m_angleY;
-
-    EmdObjectSet* objects;
+    EmdObjectSet* m_objects;
+    int m_part;
 };
 
 #endif // GLWIDGET_H

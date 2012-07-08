@@ -8,7 +8,9 @@ GLWidget::GLWidget(QWidget *parent) :
     program(0),
     frame(0),
     m_angleX(0.0f),
-    m_angleY(0.0f)
+    m_angleY(0.0f),
+    m_objects(0),
+    m_part(0)
 {
     static trianglevtn trivt = {
         //P1
@@ -45,7 +47,7 @@ GLWidget::GLWidget(QWidget *parent) :
     object->numTriangles = 1;
     object->triangles = &trivt;
 
-    this->objects = new EmdObjectSet(object, 1);
+    //this->objects = new EmdObjectSet(object, 1);
 
     timer = new QTimer(this);
     timer->start(1000 / 30);
@@ -66,6 +68,22 @@ float& GLWidget::angleY() {
 
 float GLWidget::angleY() const {
     return this->m_angleY;
+}
+
+EmdObjectSet*& GLWidget::objects() {
+    return m_objects;
+}
+
+EmdObjectSet* GLWidget::objects() const {
+    return m_objects;
+}
+
+int& GLWidget::part() {
+    return m_part;
+}
+
+int GLWidget::part() const {
+    return m_part;
 }
 
 static GLuint getShader(QWidget* caller, QString path, int type) {
@@ -101,7 +119,7 @@ void GLWidget::initializeGL()
 {
     glClearColor(0.0f / 255.0f, 68.0f / 255.0f, 153.0f / 255.0f, 1.0);
 
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
     GLuint vertexShader = getShader(this, ":/shader/shader.vert", GL_VERTEX_SHADER);
@@ -155,46 +173,17 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::paintGL()
 {
-    trianglevtn trivt = {
-        //P1
-        {
-            //Vertex1
-            { +0.0f, +0.5f, +0.0f, 1.0f },
-            //Texture1
-            { +0.0f, +1.0f },
-            //Normal1
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-
-        },
-        //P2
-        {
-            //Vertex2
-            { -0.5f, -0.5f, +0.0f, 1.0f },
-            //Texture2
-            { +1.0f, +1.0f },
-            //Normal2
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-        },
-        //P3
-        {
-            //Vertex3
-            { +0.5f, -0.5f, +0.0f, 1.0f },
-            //Texture3
-            { +0.5f, +0.0f },
-            //Normal3
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-        }
-    };
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(!this->m_objects) {
+        return;
+    }
 
     glUseProgram(program);
 
-    void* blob = &trivt;
+    objectvtn part = this->m_objects->parts()[this->part()];
 
-//    GLint aVertex = glGetAttribLocation(program, "aVertex");
-//    glVertexAttribPointer(aVertex, 3, GL_FLOAT, GL_FALSE, 0, tri);
-//    glEnableVertexAttribArray(aVertex);
+    void* blob = part.triangles;
 
     GLint aVertex = glGetAttribLocation(program, "aVertex");
     glVertexAttribPointer(aVertex, sizeof(vector4) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, sizeof(vertexvtn), blob);
@@ -237,7 +226,7 @@ void GLWidget::paintGL()
     glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, part.numTriangles * 3);
 
     frame++;
 }

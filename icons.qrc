@@ -2,5 +2,9 @@
     <qresource prefix="/icons">
         <file>folder.png</file>
         <file>door_open.png</file>
+        <file>resultset_first.png</file>
+        <file>resultset_last.png</file>
+        <file>resultset_next.png</file>
+        <file>resultset_previous.png</file>
     </qresource>
 </RCC>

@@ -9,16 +9,24 @@ class EmdObjectSet
 public:
     EmdObjectSet();
     EmdObjectSet(QByteArray blob, bool* success);
-    EmdObjectSet(objectvtn* parts, int numParts);
+    EmdObjectSet(objectvtn* m_parts, int m_numParts);
     ~EmdObjectSet();
 
     bool isEmpty() const {
-        return numParts == 0;
+        return m_numParts == 0;
+    }
+
+    objectvtn* parts() const {
+        return m_parts;
+    }
+
+    int numParts() const {
+        return m_numParts;
     }
 
 private:
-    objectvtn* parts;
-    int numParts;
+    objectvtn* m_parts;
+    int m_numParts;
 };
 
 #endif // EMDOBJECTSET_H
