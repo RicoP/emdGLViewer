@@ -161,9 +161,17 @@ void GLWidget::paintGL()
 
     void* blob = &trivt;
 
+//    GLint aVertex = glGetAttribLocation(program, "aVertex");
+//    glVertexAttribPointer(aVertex, 3, GL_FLOAT, GL_FALSE, 0, tri);
+//    glEnableVertexAttribArray(aVertex);
+
     GLint aVertex = glGetAttribLocation(program, "aVertex");
-    glVertexAttribPointer(aVertex, 3, GL_FLOAT, GL_FALSE, 0, tri);
+    glVertexAttribPointer(aVertex, sizeof(vector4) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, sizeof(vertexvtn), blob);
     glEnableVertexAttribArray(aVertex);
+
+    GLint aTextureuv = glGetAttribLocation(program, "aTextureuv");
+    glVertexAttribPointer(aTextureuv, sizeof(textureuv) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, sizeof(vertexvtn), blob + offsetof(vertexvtn, uv));
+    glEnableVertexAttribArray(aTextureuv);
 
     //qDebug() << "aVertex : " << aVertex;
 
