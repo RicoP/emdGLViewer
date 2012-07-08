@@ -5,6 +5,8 @@
 #include <QGLWidget>
 #include <QtGui>
 
+#include "gpubuffer.h"
+
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -28,6 +30,8 @@ private:
      int frame;
      float m_angleX;
      float m_angleY;
+
+    trianglevtn* triangles;
 };
 
 #endif // GLWIDGET_H

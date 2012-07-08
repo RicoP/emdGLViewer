@@ -32,3 +32,7 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     icons.qrc \
     shader.qrc
+
+OTHER_FILES += \
+    shader.vert \
+    shader.frag

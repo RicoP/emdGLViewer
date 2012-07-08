@@ -31,61 +31,46 @@ float GLWidget::angleY() const {
     return this->m_angleY;
 }
 
+static GLuint getShader(QWidget* caller, QString path, int type) {
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return 0;
 
+    QByteArray array = file.readAll();
+    const GLchar* text = array.data();
+
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, 1, &text, NULL);
+
+    glCompileShader(shader);
+
+    int compileStatus;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+
+    if(!compileStatus) {
+        GLchar message[1024];
+        GLsizei size;
+        glGetShaderInfoLog(shader, 1024, &size, &message[0]);
+
+        QMessageBox::warning(caller, "[ERROR]", message);
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
 
 void GLWidget::initializeGL()
-{    
-    static const GLbyte vertexShaderSrc[] =
-        "attribute vec4 aVertex;   "
-        "uniform mat4 uModelview;  "
-        "uniform mat4 uProjection; "
-        "void main(void) {         "
-        "	gl_Position = uProjection * uModelview * aVertex; "
-        "}                         ";
-
-    static const GLbyte fragmentShaderSrc[] =
-        "void main(void) {                             "
-        "	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);   "
-        "}                                             ";
-
-    int r = 0x00;
-    int g = 0x44;
-    int b = 0x99;
-
-    glClearColor(r / 256.0f, g / 256.0f, b / 256.0f, 1.0);
+{
+    glClearColor(0.0f / 255.0f, 68.0f / 255.0f, 153.0f / 255.0f, 1.0);
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    GLuint shaderIds[2] = { 0, 0 };
-    int flags[2] = { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER };
-    const GLbyte* sources[2] = { vertexShaderSrc, fragmentShaderSrc };
-
-    for(int i = 0; i != 2; i++) {
-        int compileStatus;
-
-        GLuint shader = glCreateShader(flags[i]);
-        glShaderSource(shader, 1, (const GLchar**)(&sources[i]), NULL);
-        glCompileShader(shader);
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
-
-        if(!compileStatus) {
-            GLchar message[1024];
-            GLsizei size;
-            glGetShaderInfoLog(shader, 1024, &size, &message[0]);
-
-            QMessageBox::warning(this, "[ERROR]", message);
-            glDeleteShader(shader);
-            return;
-        }
-
-        shaderIds[i] = shader;
-    }
+    GLuint vertexShader = getShader(this, ":/shader/shader.vert", GL_VERTEX_SHADER);
+    GLuint fragmentShader = getShader(this, ":/shader/shader.frag", GL_FRAGMENT_SHADER);
 
     program = glCreateProgram();
-
-    GLuint vertexShader = shaderIds[0];
-    GLuint fragmentShader = shaderIds[1];
 
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
@@ -139,33 +124,42 @@ void GLWidget::paintGL()
         +0.5f, -0.5f, +0.0f
     };
 
-    trianglevt trivt = {
+    trianglevtn trivt = {
         //P1
         {
             //Vertex1
             { +0.0f, +0.5f, +0.0f, 1.0f },
             //Texture1
-            { +0.0f, +1.0f }
+            { +0.0f, +1.0f },
+            //Normal1
+            { +0.0f, +0.0f, +1.0f, +0.0f }
+
         },
         //P2
         {
             //Vertex2
             { -0.5f, -0.5f, +0.0f, 1.0f },
             //Texture2
-            { +1.0f, +1.0f }
+            { +1.0f, +1.0f },
+            //Normal2
+            { +0.0f, +0.0f, +1.0f, +0.0f }
         },
         //P3
         {
             //Vertex3
             { +0.5f, -0.5f, +0.0f, 1.0f },
             //Texture3
-            { +0.5f, +0.0f }
+            { +0.5f, +0.0f },
+            //Normal3
+            { +0.0f, +0.0f, +1.0f, +0.0f }
         }
     };
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
+
+    void* blob = &trivt;
 
     GLint aVertex = glGetAttribLocation(program, "aVertex");
     glVertexAttribPointer(aVertex, 3, GL_FLOAT, GL_FALSE, 0, tri);

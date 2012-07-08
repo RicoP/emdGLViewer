@@ -1,27 +1,35 @@
 #ifndef GPUBUFFER_H
 #define GPUBUFFER_H
 
+#include <QtOpenGL>
+
 struct vector4 {
-    float x;
-    float y;
-    float z;
-    float w;
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
 };
 
 struct textureuv {
-    float u;
-    float v;
+    GLfloat u;
+    GLfloat v;
 };
 
-struct tuplevt {
-    vector4 vertex;
-    textureuv textcoord;
+struct vertexvtn {
+    vector4 position;
+    textureuv uv;
+    vector4 normal;
 };
 
-struct trianglevt {
-    tuplevt p1;
-    tuplevt p2;
-    tuplevt p3;
+struct trianglevtn {
+    vertexvtn v1;
+    vertexvtn v2;
+    vertexvtn v3;
+};
+
+struct objectvtn {
+    trianglevtn* blob;
+    int numTriangles;
 };
 
 #endif // GPUBUFFER_H

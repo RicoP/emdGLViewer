@@ -94,6 +94,10 @@
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/door_open.png</normaloff>:/icons/door_open.png</iconset>
+   </property>
    <property name="text">
     <string>Quit</string>
    </property>
