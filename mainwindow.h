@@ -29,6 +29,8 @@ public Q_SLOTS:
     void setNext();
 
     void showAbout();
+    void exportObj();
+    void exportBmp();
     
 private:
     Ui::MainWindow *ui;

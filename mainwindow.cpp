@@ -44,6 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionAbout, SIGNAL(triggered()),
                      this, SLOT(showAbout()));
 
+    QObject::connect(ui->actionExportObj, SIGNAL(triggered()),
+                     this, SLOT(exportObj()));
+
+    QObject::connect(ui->actionExportBmp, SIGNAL(triggered()),
+                     this, SLOT(exportBmp()));
+
+
     gl = new GLWidget(ui->center);
     gl->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);  
     gl->show();  
@@ -148,6 +155,30 @@ void MainWindow::sliderVerticalChanged(int degree) {
 void MainWindow::showAbout() {
     About about(this);
     about.exec();
+}
+
+void MainWindow::exportObj() {
+    QString path =
+            QFileDialog::getSaveFileName(this, tr("Save OBJ File"),
+                                         QString(), tr("OBJ Files (*.obj)"));
+
+    if(path.isNull() || path.isEmpty()) {
+        return;
+    }
+
+    gl->objects()->writeObjFile(path);
+}
+
+void MainWindow::exportBmp() {
+    QString path =
+            QFileDialog::getSaveFileName(this, tr("Save BMP File"),
+                                         QString(), tr("BMP Files (*.bmp)"));
+
+    if(path.isNull() || path.isEmpty()) {
+        return;
+    }
+
+    gl->tim()->writeBmpFile(path);
 }
 
 #undef PI

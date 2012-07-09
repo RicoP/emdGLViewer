@@ -3,6 +3,7 @@
 
 #include "gpubuffer.h"
 #include <QByteArray>
+#include <QFile>
 
 class EmdObjectSet
 {
@@ -10,6 +11,8 @@ public:
     EmdObjectSet();
     EmdObjectSet(QByteArray blob, bool* success);
     ~EmdObjectSet();
+
+    bool writeObjFile(QString path);
 
     bool isEmpty() const {
         return m_numParts == 0;

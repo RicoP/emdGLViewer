@@ -38,10 +38,10 @@ struct objectset {
 };
 
 struct pixelRGBA {
-    char r;
-    char g;
-    char b;
     char a;
+    char b;
+    char g;
+    char r;
 };
 
 struct bitmapRaw {

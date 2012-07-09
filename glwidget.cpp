@@ -135,13 +135,22 @@ void GLWidget::resizeGL(int width, int height) {
 }
 
 void GLWidget::refreshData() {
+    int w = 2;
+    int h = 2;
+    static unsigned int p[4] = {
+        0x80808080, 0x0,
+        0xFF00FF00, 0x00FF00FF
+    };
+
+    qDebug() << p[0] << " " << p[1] << " " << p[2] << " " << p[3] << " " ;
+
     glDeleteTextures(1, &texture);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    //glPixelStorei(GL_UNPACK_SWAP_BYTES, 1);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->tim()->width(), this->tim()->height(), 0, GL_RGBA, GL_BYTE, this->tim()->raw());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->tim()->width(), this->tim()->height(), 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, this->tim()->raw());
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w,h, 0, GL_RGBA, GL_BYTE, p);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -197,7 +206,7 @@ void GLWidget::paintGL()
     glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
 
-    //qDebug()<< texture;
+    qDebug()<< texture;
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uTexture, 0);

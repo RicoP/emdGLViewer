@@ -122,5 +122,72 @@ EmdObjectSet::~EmdObjectSet() {
     }
 }
 
+bool EmdObjectSet::writeObjFile(QString path) {
+    if(path.isNull() || path.isEmpty()) {
+        return false;
+    }
+
+    QFile file(path);
+
+    if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+        return false;
+    }
+
+    QTextStream out(&file);
+    out << "#OBJ File" << endl;
+
+    enum State {
+        VERTEX  = 0,
+        TEXTURE = 1,
+        NORMAL  = 2,
+        FACE    = 3
+    };
+
+    int f = 1;
+
+    for(int iobj = 0; iobj != this->numParts(); iobj++) {
+        objectvtn part = this->parts()[iobj];
+        out << "o object_" << iobj << endl;
+
+        for(int state = VERTEX; state != 4; ++state) {
+            for(int i = 0; i != part.numTriangles; i++) {
+                trianglevtn triangle = part.triangles[i];
+                switch(state) {
+                case VERTEX:
+                    out << "v " << triangle.v1.position.x << " " << triangle.v1.position.y << " " << triangle.v1.position.z << endl;
+                    out << "v " << triangle.v2.position.x << " " << triangle.v2.position.y << " " << triangle.v2.position.z << endl;
+                    out << "v " << triangle.v3.position.x << " " << triangle.v3.position.y << " " << triangle.v3.position.z << endl;
+                    break;
+
+                case TEXTURE:
+                    out << "vt " << triangle.v1.uv.u << " " << triangle.v1.uv.v << endl;
+                    out << "vt " << triangle.v2.uv.u << " " << triangle.v2.uv.v << endl;
+                    out << "vt " << triangle.v3.uv.u << " " << triangle.v3.uv.v << endl;
+                    break;
+
+                case NORMAL:
+                    out << "vn " << triangle.v1.normal.x << " " << triangle.v1.normal.y << " " << triangle.v1.normal.z << endl;
+                    out << "vn " << triangle.v2.normal.x << " " << triangle.v2.normal.y << " " << triangle.v2.normal.z << endl;
+                    out << "vn " << triangle.v3.normal.x << " " << triangle.v3.normal.y << " " << triangle.v3.normal.z << endl;
+                    break;
+
+                case FACE:
+                    out << "f ";
+                    out << f << "/" << f << "/" << f << " ";
+                    f++;
+                    out << f << "/" << f << "/" << f << " ";
+                    f++;
+                    out << f << "/" << f << "/" << f << endl;
+                    f++;
+                    break;
+                }
+            }
+        }
+        out << endl;
+    }
+
+    return true;
+}
+
 #undef snormalize
 #undef cnormalize

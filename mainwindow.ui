@@ -67,6 +67,9 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
+    <addaction name="actionExportObj"/>
+    <addaction name="actionExportBmp"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuObject">
@@ -167,6 +170,16 @@
    </property>
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionExportObj">
+   <property name="text">
+    <string>Export .obj</string>
+   </property>
+  </action>
+  <action name="actionExportBmp">
+   <property name="text">
+    <string>Export .bmp</string>
    </property>
   </action>
  </widget>

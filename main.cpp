@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <QFile>
 #include "gpubuffer.h"
+#include "emdtypes.h"
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -25,6 +26,9 @@ int main(int argc, char *argv[])
     assert(sizeof(textureuv)   == sizeof(GLfloat) * 2);
     assert(sizeof(vertexvtn)   == sizeof(vector4) + sizeof(textureuv) + sizeof(vector4));
     assert(sizeof(trianglevtn) == sizeof(vertexvtn) * 3);
+
+    assert(sizeof(pixelRGBA) == 4);
+    assert(sizeof(high_color_t) == 2);
 
     QApplication a(argc, argv);
     MainWindow w;

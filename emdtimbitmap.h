@@ -9,7 +9,9 @@ class EmdTimBitmap
 public:
     EmdTimBitmap();
     EmdTimBitmap(QByteArray array, bool* success);
-    ~EmdTimBitmap();
+    ~EmdTimBitmap();        
+
+    bool writeBmpFile(QString path);
 
     int width() const;
     int height() const;
