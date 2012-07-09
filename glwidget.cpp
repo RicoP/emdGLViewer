@@ -10,45 +10,10 @@ GLWidget::GLWidget(QWidget *parent) :
     m_angleX(0.0f),
     m_angleY(0.0f),
     m_objects(0),
-    m_part(0)
-{
-    static trianglevtn trivt = {
-        //P1
-        {
-            //Vertex1
-            { +0.0f, +0.5f, +0.0f, 1.0f },
-            //Texture1
-            { +0.0f, +1.0f },
-            //Normal1
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-
-        },
-        //P2
-        {
-            //Vertex2
-            { -0.5f, -0.5f, +0.0f, 1.0f },
-            //Texture2
-            { +1.0f, +1.0f },
-            //Normal2
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-        },
-        //P3
-        {
-            //Vertex3
-            { +0.5f, -0.5f, +0.0f, 1.0f },
-            //Texture3
-            { +0.5f, +0.0f },
-            //Normal3
-            { +0.0f, +0.0f, +1.0f, +0.0f }
-        }
-    };
-
-    objectvtn* object = new objectvtn();
-    object->numTriangles = 1;
-    object->triangles = &trivt;
-
-    //this->objects = new EmdObjectSet(object, 1);
-
+    m_tim(0),
+    m_part(0),
+    texture(0)
+{    
     timer = new QTimer(this);
     timer->start(1000 / 30);
     connect(timer,SIGNAL(timeout()),this,SLOT(repaint()));
@@ -86,6 +51,14 @@ int GLWidget::part() const {
     return m_part;
 }
 
+EmdTimBitmap*& GLWidget::tim() {
+    return m_tim;
+}
+
+EmdTimBitmap* GLWidget::tim() const {
+    return m_tim;
+}
+
 static GLuint getShader(QWidget* caller, QString path, int type) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -119,10 +92,10 @@ void GLWidget::initializeGL()
 {
     glClearColor(0.0f / 255.0f, 68.0f / 255.0f, 153.0f / 255.0f, 1.0);
 
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    GLuint vertexShader = getShader(this, ":/shader/shader.vert", GL_VERTEX_SHADER);
+    GLuint vertexShader   = getShader(this, ":/shader/shader.vert", GL_VERTEX_SHADER);
     GLuint fragmentShader = getShader(this, ":/shader/shader.frag", GL_FRAGMENT_SHADER);
 
     program = glCreateProgram();
@@ -153,22 +126,22 @@ void GLWidget::initializeGL()
         glDeleteProgram(program);
         return;
     }
-
-    /*GLuint vtBuffer;
-    glGenBuffers(1, &vtBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vtBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), tri, GL_STATIC_DRAW);*/
-
-
-
-    //this->resizeGL(this->parentWidget()->size().width(), this->parentWidget()->size().height());
 }
 
-void GLWidget::resizeGL(int width, int height)
-{
-    qDebug() << "SIZE: " << width << " " << height;
+void GLWidget::resizeGL(int width, int height) {
     glViewport(0, 0, (GLint)width, (GLint)height);
     paintGL();
+}
+
+void GLWidget::refreshData() {
+    glDeleteTextures(1, &texture);
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glPixelStorei(GL_UNPACK_SWAP_BYTES, 1);
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->tim()->width(), this->tim()->height(), 0, GL_RGBA, GL_BYTE, this->tim()->raw());
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void GLWidget::paintGL()
@@ -208,23 +181,25 @@ void GLWidget::paintGL()
 
     float camera[16];
 
-    mat4_lookAt(cameraPos, cameraCenter, cameraUp, camera);
+    mat4_lookAt(cameraPos, cameraCenter, cameraUp, camera);   
 
-    mat4_perspective(75.0f, 4.0f / 3.0f, 0.1f, 1000.0f, projection);    
+    mat4_perspective(75.0f, (1.0f * this->size().width()) / (1.0f * this->size().height()), 0.1f, 1000.0f, projection);
 
     GLint uModelview = glGetUniformLocation(program, "uModelview");
     GLint uProjection = glGetUniformLocation(program, "uProjection");
-    //GLint uTexture = glGetUniformLocation(program, "uTexture");
+    GLint uTexture = glGetUniformLocation(program, "uTexture");
 
     mat4_multiply(modelview, camera, modelview);    
     mat4_rotateY(modelview, angleY(), modelview);
     mat4_rotateX(modelview, angleX(), modelview);
 
-    //mat4_identity(modelview);
-    //mat4_identity(projection);
-
     glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
+
+    qDebug()<< texture;
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(uTexture, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, part.numTriangles * 3);
 

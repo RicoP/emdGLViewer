@@ -4,6 +4,7 @@ attribute vec2 aTextureuv;
 
 uniform mat4 uModelview;
 uniform mat4 uProjection;
+uniform sampler2D uTexture;
 
 varying vec2 vTextureuv;
 

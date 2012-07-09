@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "glwidget.h"
 #include "emdhelper.h"
+#include "emdtimbitmap.h"
 #include "about.h"
 
 #include <QGLWidget>
@@ -80,15 +81,35 @@ void MainWindow::openEmdFile() {
 
     EmdHelper::Dictionary dict = EmdHelper::getDictionary(array);
 
-    bool success = false;
-    EmdObjectSet* set = new EmdObjectSet(array.mid(dict.mesh), &success);
+    bool successSet = false;
+    EmdObjectSet* set = new EmdObjectSet(array.mid(dict.mesh), &successSet);
 
-    if(success) {
+    bool successTim = false;
+    EmdTimBitmap* tim = new EmdTimBitmap(array.mid(dict.tim), &successTim);
+
+    if(successSet && successTim) {
+        delete gl->objects();
+        delete gl->tim();
+
         gl->objects() = set;
+        gl->tim() = tim;
         gl->part() = 0;
+
+        gl->refreshData();
     }
     else {
+        if(!successSet && !successTim) {
+            QMessageBox::warning(this, "ERROR", "Error while parsing mesh and image data.");
+        }
+        else if(!successSet) {
+            QMessageBox::warning(this, "ERROR", "Error while parsing mesh Data.");
+        }
+        else if(!successTim) {
+            QMessageBox::warning(this, "ERROR", "Error while parsing image Data.");
+        }
+
         delete set;
+        delete tim;
     }
 }
 
@@ -100,7 +121,7 @@ void MainWindow::setFirst() {
 
 void MainWindow::setLast() {
     if(this->gl->objects()) {
-        this->gl->part() = gl->objects()->numParts() - 1;
+        this->gl->part() = gl->objects()->numParts() - 1;        
     }
 }
 
@@ -117,11 +138,11 @@ void MainWindow::setNext() {
 }
 
 void MainWindow::sliderHorizontalChanged(int degree) {
-    gl->angleY() = 2.0f * PI * degree / 360.0f;
+    gl->angleY() = 2.0f * PI * degree / 360.0f;    
 }
 
 void MainWindow::sliderVerticalChanged(int degree) {
-    gl->angleX() = -2.0f * PI * degree / 360.0f;
+    gl->angleX() = -2.0f * PI * degree / 360.0f;        
 }
 
 void MainWindow::showAbout() {

@@ -112,11 +112,6 @@ EmdObjectSet::EmdObjectSet(QByteArray buffer, bool* success) {
     *success = true;
 }
 
-EmdObjectSet::EmdObjectSet(objectvtn *parts, int numParts) {
-    this->m_parts = parts;
-    this->m_numParts = numParts;
-}
-
 EmdObjectSet::~EmdObjectSet() {
     if(m_parts) {
         if(m_parts->triangles) {

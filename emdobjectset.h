@@ -9,7 +9,6 @@ class EmdObjectSet
 public:
     EmdObjectSet();
     EmdObjectSet(QByteArray blob, bool* success);
-    EmdObjectSet(objectvtn* m_parts, int m_numParts);
     ~EmdObjectSet();
 
     bool isEmpty() const {
