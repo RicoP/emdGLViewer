@@ -94,6 +94,7 @@ void GLWidget::initializeGL()
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
 
     GLuint vertexShader   = getShader(this, ":/shader/shader.vert", GL_VERTEX_SHADER);
     GLuint fragmentShader = getShader(this, ":/shader/shader.frag", GL_FRAGMENT_SHADER);
@@ -137,7 +138,7 @@ void GLWidget::refreshData() {
     glDeleteTextures(1, &texture);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glPixelStorei(GL_UNPACK_SWAP_BYTES, 1);
+    //glPixelStorei(GL_UNPACK_SWAP_BYTES, 1);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->tim()->width(), this->tim()->height(), 0, GL_RGBA, GL_BYTE, this->tim()->raw());
@@ -196,7 +197,7 @@ void GLWidget::paintGL()
     glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
 
-    qDebug()<< texture;
+    //qDebug()<< texture;
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uTexture, 0);
