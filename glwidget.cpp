@@ -12,7 +12,9 @@ GLWidget::GLWidget(QWidget *parent) :
     m_objects(0),
     m_tim(0),
     m_part(0),
-    texture(0)
+    texture(0),
+    m_showWireframe(0),
+    distance(2.0f)
 {    
     timer = new QTimer(this);
     timer->start(1000 / 30);
@@ -59,6 +61,26 @@ EmdTimBitmap* GLWidget::tim() const {
     return m_tim;
 }
 
+bool& GLWidget::showWireframe() {
+    return m_showWireframe;
+}
+
+bool GLWidget::showWireframe() const {
+    return m_showWireframe;
+}
+
+void GLWidget::zoom(float difference) {
+    if( distance + difference > 3.0f ) {
+        distance = 3.0f;
+    }
+    else if( distance + difference < 0.5f ) {
+        distance = 0.5f;
+    }
+    else {
+        distance += difference;
+    }
+}
+
 static GLuint getShader(QWidget* caller, QString path, int type) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -92,7 +114,7 @@ void GLWidget::initializeGL()
 {
     glClearColor(0.0f / 255.0f, 68.0f / 255.0f, 153.0f / 255.0f, 1.0);
 
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
 
@@ -183,7 +205,7 @@ void GLWidget::paintGL()
 
     mat4_identity(modelview);
 
-    float cameraPos[3] = {0.0f, 0.0f, 2.0f};
+    float cameraPos[3] = {0.0f, 0.0f, distance};
     float cameraNormal[3] = {0.0f, 0.0f, -1.0f};
     float cameraUp[3] = {0.0f, 1.0f, 0.0f};
     float cameraCenter[3];
@@ -206,12 +228,12 @@ void GLWidget::paintGL()
     glUniformMatrix4fv(uModelview, 1, GL_FALSE, modelview);
     glUniformMatrix4fv(uProjection, 1, GL_FALSE, projection);
 
-    qDebug()<< texture;
+    //qDebug()<< texture;
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uTexture, 0);
 
-    glDrawArrays(GL_TRIANGLES, 0, part.numTriangles * 3);
+    glDrawArrays( showWireframe() ? GL_LINES : GL_TRIANGLES, 0, part.numTriangles * 3);
 
     frame++;
 }

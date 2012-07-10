@@ -22,6 +22,8 @@ public:
 
     void refreshData();
 
+    void zoom(float difference);
+
     float& angleX();
     float angleX() const;
 
@@ -36,6 +38,9 @@ public:
 
     EmdTimBitmap*& tim();
     EmdTimBitmap* tim() const;
+
+    bool& showWireframe();
+    bool showWireframe() const;
     
 private:
     QTimer* timer;
@@ -47,6 +52,8 @@ private:
     EmdTimBitmap* m_tim;
     int m_part;
     GLuint texture;
+    bool m_showWireframe;
+    float distance;
 };
 
 #endif // GLWIDGET_H

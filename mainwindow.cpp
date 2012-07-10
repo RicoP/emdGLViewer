@@ -50,6 +50,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionExportBmp, SIGNAL(triggered()),
                      this, SLOT(exportBmp()));
 
+    QObject::connect(ui->actionZoom_In, SIGNAL(triggered()),
+                     this, SLOT(zoomIn()));
+
+    QObject::connect(ui->actionZoom_Out, SIGNAL(triggered()),
+                     this, SLOT(zoomOut()));
+
+    QObject::connect(ui->actionWireframe, SIGNAL(triggered(bool)),
+                     this, SLOT(wireframe(bool)));
+
+
 
     gl = new GLWidget(ui->center);
     gl->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);  
@@ -103,6 +113,16 @@ void MainWindow::openEmdFile() {
         gl->part() = 0;
 
         gl->refreshData();
+
+        ui->actionExportBmp->setEnabled(true);
+        ui->actionExportObj->setEnabled(true);
+        ui->actionFirstPart->setEnabled(true);
+        ui->actionLastPart->setEnabled(true);
+        ui->actionNextPart->setEnabled(true);
+        ui->actionPreviousPart->setEnabled(true);
+        ui->actionWireframe->setEnabled(true);
+        ui->actionZoom_In->setEnabled(true);
+        ui->actionZoom_Out->setEnabled(true);
     }
     else {
         if(!successSet && !successTim) {
@@ -155,6 +175,18 @@ void MainWindow::sliderVerticalChanged(int degree) {
 void MainWindow::showAbout() {
     About about(this);
     about.exec();
+}
+
+void MainWindow::zoomIn() {
+    gl->zoom(-0.1f);
+}
+
+void MainWindow::zoomOut() {
+    gl->zoom(0.1f);
+}
+
+void MainWindow::wireframe(bool b) {
+    gl->showWireframe() = b;
 }
 
 void MainWindow::exportObj() {

@@ -31,6 +31,10 @@ public Q_SLOTS:
     void showAbout();
     void exportObj();
     void exportBmp();
+
+    void zoomIn();
+    void zoomOut();
+    void wireframe(bool b);
     
 private:
     Ui::MainWindow *ui;

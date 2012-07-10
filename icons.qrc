@@ -7,5 +7,10 @@
         <file>resultset_next.png</file>
         <file>resultset_previous.png</file>
         <file>star.png</file>
+        <file>page_white_code_red.png</file>
+        <file>page_white_picture.png</file>
+        <file>zoom_in.png</file>
+        <file>zoom_out.png</file>
+        <file>eye.png</file>
     </qresource>
 </RCC>
